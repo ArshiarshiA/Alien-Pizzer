@@ -26,7 +26,7 @@ You just need to run the following commands, and **BOOM!** 🎉 Now you can ente
 
 Want to improve Alien Pizzer? Feel free to open an issue, submit a pull request, or share your ideas!🚀
 
-### Step ⤵️
+### Steps ⤵️
 
 > 1️. Fork the repository 🍴 \
 Click on the Fork button at the top right of this page to create your own copy of the project.
