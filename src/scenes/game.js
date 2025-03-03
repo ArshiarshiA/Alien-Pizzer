@@ -17,6 +17,8 @@ export default class Game extends Scene {
         this.isOver = false;
         this.centerX = null;
         this.centerY = null;
+        this.hp = 3;
+        this.hearts = [];
     }
 
     preload() {
@@ -36,6 +38,9 @@ export default class Game extends Scene {
         // Potion Images
         this.load.image('speed', '/posions/speed.png')
         this.load.image('health', '/posions/health.png')
+
+        // Heart Image
+        this.load.image('heart', '/heart.png')
 
         // Sprite Sheet Images
         this.load.image('ani1', '/animation/Explosion/Explosion_1.png');
@@ -64,6 +69,11 @@ export default class Game extends Scene {
         // Texts
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px' });
         this.rejectText = this.add.text(this.game.config.width - 300, 16, 'Rejecteds: 0', { fontSize: '32px' });
+
+        // Hearts
+        for (let i = 0; i < this.hp; i++) {
+            this.hearts.push(this.add.image(30 + (i * 40), 70, 'heart').setScale(0.0700))
+        }
 
         // Player Ship
         this.ship = this.physics.add.image(this.centerX, this.centerY, 'ship').setScale(0.4);
@@ -131,14 +141,8 @@ export default class Game extends Scene {
         })
 
         this.physics.collide(this.ship, this.enemy, (ship, enemy) => {
-            ship.destroy();
-            enemy.destroy();
-
-            // Play Explosion 
-            this.playAnimation('expo', ship.x, ship.y, 'ani1');
-
-            this.add.text(180, 250, 'Game Over! \n enter "SPACE" to continiue', { fontSize: 30 });
-            this.makeGameOver();
+            this.damage(ship, enemy)
+            this.playAnimation('expo', enemy.x, enemy.y, 'ani1');
         })
 
         // Potions
@@ -177,7 +181,7 @@ export default class Game extends Scene {
 
     shooting() {
         if (this.keys.space.isDown && this.canShot) {
-            let bullet = this.physics.add.image(this.ship.x, this.ship.y, 'bullet').setSize(1 , 1).setScale(0.0500)
+            let bullet = this.physics.add.image(this.ship.x, this.ship.y, 'bullet').setSize(1, 1).setScale(0.0500)
             this.bullets.add(bullet);
             this.canShot = false;
 
@@ -207,15 +211,6 @@ export default class Game extends Scene {
         })
     }
 
-    gameOver() {
-        if (this.isOver) {
-            if (this.keys.space.isDown) {
-                this.scene.restart();
-                this.isOver = false;
-            }
-            return;
-        }
-    }
 
     playAnimation(name, x, y, fristFrame) {
         let expo = this.add.sprite(x, y, fristFrame);
@@ -238,6 +233,23 @@ export default class Game extends Scene {
         this.physics.add.overlap(this.ship, posion, this.potionOverlap, null, this)
     }
 
+    damage(ship, enemy) {
+        enemy.destroy();
+        this.hp--;
+
+        if (this.hearts.length > 0) {
+            let lastHeart = this.hearts.pop();
+            lastHeart.destroy();
+        }
+
+        if (this.hp <= 0) {
+            this.playAnimation('expo', ship.x, ship.y, 'ani1');
+            ship.destroy();
+            this.add.text(180, 250, 'Game Over! \n press "SPACE" to continue', { fontSize: 30 });
+            this.isOver = true
+        }
+    }
+
     potionOverlap(ship, potion) {
         potion.destroy()
         switch (potion.potionT) {
@@ -245,9 +257,21 @@ export default class Game extends Scene {
                 this.shipSpeed = 7;
                 this.time.delayedCall(7000, () => this.shipSpeed = 4);
                 break;
-            // case 'health': 
+            case 'health':
+                if (this.hp < 5) {
+                    this.hp += 1;
+                    this.hearts.push(this.add.image(30 + (this.hearts.length * 40), 70, 'heart').setScale(0.0700))
+                }
+                break;
         }
     }
 
-    makeGameOver = () => this.isOver = true;
+    gameOver() {
+        if (this.isOver) {
+            if (this.keys.space.isDown) {
+                window.location.reload();
+                this.isOver = false;
+            }
+        }
+    }
 }
