@@ -3,7 +3,7 @@
 a spaceship in space, carrying a bunch of pizzas in its cargo hold, is now ready to destroy the Pizza Gods' enemies, this time with **JavaScript + Phaser**!
 
 <p align="center">
-  <img src="https://github.com/ArshiarshiA/Alien-Pizzer/blob/main/Screenshot.png" width="300">
+  <img src="https://github.com/ArshiarshiA/Alien-Pizzer/blob/main/Screenshot.png" width="600">
 </p>
 
 # How To Play❔ 🚀
