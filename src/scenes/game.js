@@ -7,6 +7,7 @@ export default class Game extends Scene {
         this.ship = null;
         this.shipSpeed = 4;
         this.bullets = null;
+        this.bulSpeed = 500;
         this.canShot = true;
         this.enemy = null;
         this.score = 0;
@@ -38,6 +39,7 @@ export default class Game extends Scene {
         // Potion Images
         this.load.image('speed', '/posions/speed.png')
         this.load.image('health', '/posions/health.png')
+        this.load.image('bullSpeed', '/posions/bulSpeed.png')
 
         // Heart Image
         this.load.image('heart', '/heart.png')
@@ -185,7 +187,7 @@ export default class Game extends Scene {
             this.bullets.add(bullet);
             this.canShot = false;
 
-            this.time.delayedCall(500, () => {
+            this.time.delayedCall(this.bulSpeed, () => {
                 this.canShot = true;
             })
         }
@@ -221,7 +223,7 @@ export default class Game extends Scene {
     }
 
     posionSpawn() {
-        let potionsTypes = ['speed', 'health'];
+        let potionsTypes = ['speed', 'health' , 'bullSpeed'];
         let randomPotion = potionsTypes[Math.Between(0, potionsTypes.length - 1)]
 
         let posion = this.physics.add.image(Math.Between(0, this.game.config.width), 0, randomPotion).setScale(1.1);
@@ -262,6 +264,10 @@ export default class Game extends Scene {
                     this.hp += 1;
                     this.hearts.push(this.add.image(30 + (this.hearts.length * 40), 70, 'heart').setScale(0.0700))
                 }
+                break;
+            case 'bullSpeed':
+                this.bulSpeed = 160;
+                this.time.delayedCall(5000 , () => this.bulSpeed = 500)
                 break;
         }
     }
