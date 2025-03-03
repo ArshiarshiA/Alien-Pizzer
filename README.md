@@ -3,11 +3,11 @@
 a spaceship in space, carrying a bunch of pizzas in its cargo hold, is now ready to destroy the Pizza Gods' enemies, this time with **JavaScript + Phaser**!
 
 # How To Play❔ 🚀
-.1 The first step to defeating the enemies is movement! You can move up, down, left, and right with (⬆️ , ⬇️ , ⬅️ , ➡️).
 
-.2 The next step is to defend yourself with pizzas! By pressing the `space` on your keyboard, you can shoot :pizza: and destroy enemies!"
-
-.3 Destroying enemies isn't just fun it earns you points! Every 100 points, you’ll randomly receive a potion🧪. Each potion grants you a unique power-up, giving you an edge in battle. Who knows? These boosts might be just what you need to push forward and dominate the game! 🚀 🔥
+🕹 **Move your spaceship** → Use **Arrow Keys** (⬆️ ⬇️ ⬅️ ➡️)  
+🍕 **Shoot pizzas** → Press **Spacebar**  
+🏆 **Earn points** → Destroy enemies!  
+🧪 **Power-ups!** → Every **100 points**, get a **random potion** to boost your abilities!  
 
 
 # How To Run The Game❔ 🌀
