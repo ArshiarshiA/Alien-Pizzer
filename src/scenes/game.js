@@ -11,9 +11,11 @@ export default class Game extends Scene {
         this.canShot = true;
         this.enemy = null;
         this.bosses = null;
+        this.isBossShooter = false
         this.bossDefeated = false;
         this.bossesD = {
-            '1000': { name: 'Crazy Alien (Driver)', health: 1100, image: 'boss' }
+            '1000': { name: 'Crazy Alien (Driver)', health: 1100, image: 'boss' },
+            '2000': { name: 'Spider', health: 1100, image: 'spider' }
         }
         this.score = 0;
         this.scoreText = null;
@@ -41,6 +43,7 @@ export default class Game extends Scene {
 
         // Bosses Images
         this.load.image('boss', '/bosses/boss.png')
+        this.load.image('spider', '/bosses/spider.png')
 
         // Bullets Image
         this.load.image('bullet', '/spacebullet.png');
@@ -101,7 +104,9 @@ export default class Game extends Scene {
             delay: 1000,
             loop: true,
             callback: () => {
-                this.bossShooting()
+                if (this.isBossShooter) {
+                    this.bossShooting()
+                }
             }
         })
 
@@ -152,7 +157,8 @@ export default class Game extends Scene {
         this.enemyLogic()
 
         // Bosse Spawnes
-        this.bossSpawn(1000 , '1000')
+        this.bossSpawn(1000, '1000', 0.6)
+        this.bossSpawn(2000, '2000', 0.4)
 
         // Collides
         this.physics.collide(this.bullets, this.enemy, (bullet, enemy) => {
@@ -288,12 +294,12 @@ export default class Game extends Scene {
         })
     }
 
-    bossSpawn(nededScore , selectBoss) {
+    bossSpawn(nededScore, selectBoss, size) {
         if (this.score >= nededScore && !this.bossDefeated && this.bosses.getLength() === 0) {
 
             this.bossEffect = false;
             let selectedBoss = this.bossesD[selectBoss];
-
+            let boss = this.physics.add.image(this.game.config.width / 2, 0, selectedBoss.image).setScale(size).setSize(755, 100);
             this.bossHealthBarBG = this.add.graphics();
             this.bossHealthBarBG.fillStyle(0xff0000, 1);
             this.bossHealthBarBG.fillRect(100, 570, 600, 20);
@@ -301,23 +307,46 @@ export default class Game extends Scene {
             this.bossHealthBar = this.add.graphics();
             this.bossHealthBar.fillStyle(0x00ff00, 1);
             this.bossHealthBar.fillRect(100, 570, 600, 20);
-
-            let boss = this.physics.add.image(this.game.config.width / 2, 0, selectedBoss.image).setScale(0.6).setSize(755, 100);
             boss.health = selectedBoss.health;
             if (!this.bossDefeated) {
                 this.bossName = this.add.text((this.game.config.width / 2) - 300, 550, selectedBoss.name)
             }
 
             this.bosses.add(boss)
-            boss.setCollideWorldBounds(true);
-            boss.setBounce(1);
-            boss.setVelocityY(50);
-            boss.setImmovable(true);
-            boss.body.allowGravity = false;
-            this.time.delayedCall(3200, () => {
-                boss.setVelocityY(0)
-                boss.setVelocityX(35)
-            })
+            switch (selectedBoss.name) {
+                case 'Crazy Alien (Driver)':
+                    this.isBossShooter = true
+                    boss.setCollideWorldBounds(true);
+                    boss.setBounce(1);
+                    boss.setVelocityY(50);
+                    boss.setImmovable(true);
+                    boss.body.allowGravity = false;
+                    this.time.delayedCall(3200, () => {
+                        boss.setVelocityY(0)
+                        boss.setVelocityX(35)
+                    })
+                    break;
+                case 'Spider':
+                    boss.setCollideWorldBounds(true);
+                    boss.setBounce(1);
+                    boss.setVelocityY(50);
+                    boss.setImmovable(true);
+                    boss.body.allowGravity = false;
+                    this.time.delayedCall(2000, () => {
+
+                        boss.setVelocityY(0)
+                        let playerX = this.ship.x;
+                        let playerY = this.ship.y;
+                        let bossX = boss.x;
+                        let bossY = boss.y;
+                
+                        let angle = window.Math.atan2(playerY - bossY, playerX - bossX);
+                
+                        boss.setVelocityX((window.Math.cos(angle) * 50) + 90);
+                        boss.setVelocityY((window.Math.sin(angle) * 50) + 90);
+                    })
+                    break;
+            }
         }
     }
 
